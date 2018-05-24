@@ -1,0 +1,35 @@
+global proc beginCreateCache()
+{
+	float $start = `floatFieldGrp -q -v1 timeRange`;
+	float $end = `floatFieldGrp -q -v2 timeRange`;
+	string $imagePath = `textFieldGrp -q -text pathName`;
+	createFoamCache($imagePath,$start , $end  );
+}
+
+global proc createFoamCacheUI()
+{
+	string $cache_window ;
+	if(`window -ex $cache_window`)
+         deleteUI -window $cache_window;
+	$cache_window= `window -title "foamCache"
+ 		-iconName "fc"
+ 		-widthHeight 300 150`;
+	columnLayout -adjustableColumn true;
+	separator -height 20 ;	
+	
+	textFieldGrp -label "PathName"
+		      -text "your cache path and name" pathName;
+		      
+	floatFieldGrp -numberOfFields 2
+    		       -label "Start/End"
+   		       -value1 1.0 -value2 100 timeRange;
+
+    separator -height 20 ;  
+ 
+    button -label "createCache" -command "beginCreateCache";
+ 	button -label "Close" -command ("deleteUI -window " + $cache_window);
+           
+ 	setParent ..;
+	window -e -widthHeight 400 160 $cache_window ;
+	showWindow $cache_window;
+}

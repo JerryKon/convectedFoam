@@ -1,0 +1,8 @@
+global proc setFieldAttr(string $fieldName)
+{
+	setAttr ($fieldName+".magnitude") 2;	
+	setAttr ($fieldName+".frequency") 0.5;
+	setAttr ($fieldName+".nearValue") 1.4;
+	setAttr ($fieldName+".forcePower") 2;
+
+}

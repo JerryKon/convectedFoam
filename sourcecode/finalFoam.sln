@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "finalFoam", "finalFoam\finalFoam.vcxproj", "{62B6284B-6E4D-4E3E-AC78-99143791E352}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{62B6284B-6E4D-4E3E-AC78-99143791E352}.Debug|Win32.ActiveCfg = Debug|Win32
+		{62B6284B-6E4D-4E3E-AC78-99143791E352}.Debug|Win32.Build.0 = Debug|Win32
+		{62B6284B-6E4D-4E3E-AC78-99143791E352}.Debug|x64.ActiveCfg = Debug|Win32
+		{62B6284B-6E4D-4E3E-AC78-99143791E352}.Debug|x64.Build.0 = Debug|Win32
+		{62B6284B-6E4D-4E3E-AC78-99143791E352}.Release|Win32.ActiveCfg = release2009|x64
+		{62B6284B-6E4D-4E3E-AC78-99143791E352}.Release|Win32.Build.0 = release2009|x64
+		{62B6284B-6E4D-4E3E-AC78-99143791E352}.Release|x64.ActiveCfg = release2009|x64
+		{62B6284B-6E4D-4E3E-AC78-99143791E352}.Release|x64.Build.0 = release2009|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

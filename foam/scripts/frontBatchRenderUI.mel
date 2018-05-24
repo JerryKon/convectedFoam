@@ -1,0 +1,39 @@
+global proc beginRender()
+{
+	float $start = `floatFieldGrp -q -v1 timeRange`;
+	float $end = `floatFieldGrp -q -v2 timeRange`;
+	float $dyStart = `floatFieldGrp -q -v1 dynamicTime`;
+	string $imagePath = `textFieldGrp -q -text imageName`;
+	frontBatchRender($dyStart,$start , $end,$imagePath  );
+}
+
+global proc frontBatchRenderUI()
+{
+	string $fbr_window ;
+	if(`window -ex $fbr_window`)
+         deleteUI -window $fbr_window;
+	$fbr_window= `window -title "frontBatchRender"
+ 		-iconName "FBR"
+ 		-widthHeight 300 150`;
+	columnLayout -adjustableColumn true;
+	separator -height 20 ;	
+
+	floatFieldGrp -label "DynamicStartTime"
+   		       -value1 1.0 dynamicTime;
+
+	floatFieldGrp -numberOfFields 2
+    		       -label "Start/End"
+   		       -value1 1.0 -value2 100 timeRange;
+
+	textFieldGrp -label "ImagePathName"
+		      -text "your image path and name" imageName;
+
+        separator -height 20 ;  
+ 
+    	button -label "Render" -command "beginRender";
+ 	button -label "Close" -command ("deleteUI -window " + $fbr_window);
+           
+ 	setParent ..;
+	window -e -widthHeight 400 180 $fbr_window ;
+	showWindow $fbr_window;
+}

@@ -1,0 +1,137 @@
+
+
+global proc AddMenuItem()
+{
+
+		menuItem -label "Simple Foam "
+						-echoCommand true
+						-tearOff 1
+						-allowOptionBoxes true
+						-subMenu false
+						-c "simpleFoam 0"
+						simple_Foam;
+		setParent -m crystalFoamMenu;
+		
+		if(`about -v` == "2009")
+		{
+			menuItem -label "Simple nFoam "
+						-echoCommand true
+						-tearOff 1
+						-allowOptionBoxes true
+						-subMenu false
+						-c "simpleFoam 1"
+						simple_nFoam;
+			setParent -m crystalFoamMenu;
+		}		
+		
+		menuItem -label "Dynamic Foam "
+						-echoCommand true
+						-tearOff 1
+						-allowOptionBoxes true
+						-subMenu false
+						-c "dynamicFoam 0"
+						dynamic_Foam;
+		setParent -m crystalFoamMenu;
+		
+		if(`about -v` == "2009")
+		{
+			menuItem -label "Dynamic nFoam "
+						-echoCommand true
+						-tearOff 1
+						-allowOptionBoxes true
+						-subMenu false
+						-c "dynamicFoam 1"
+						dynamic_nFoam;
+			setParent -m crystalFoamMenu;
+		}	
+
+		menuItem -divider true;
+		
+		menuItem -label "Create Foam Cache"
+						-echoCommand true
+						-tearOff 1
+						-allowOptionBoxes true
+						-subMenu false
+						-c "createFoamCacheUI"
+						foamCache;
+		setParent -m crystalFoamMenu;
+		
+		menuItem -label "Import Foam Cache"
+						-echoCommand true
+						-tearOff 1
+						-allowOptionBoxes true
+						-subMenu false
+						-c "createFoamCacheNodeUI"
+						foamNodeCache;
+		setParent -m crystalFoamMenu;
+		
+		menuItem -divider true;
+		
+		menuItem -label "Make Particle To Foam"
+						-echoCommand true
+						-tearOff 1
+						-allowOptionBoxes true
+						-subMenu false
+						-c "makeParticle2Foam 1"
+						particle2Foam;
+		setParent -m crystalFoamMenu;
+		
+		menuItem -divider true;	
+		
+		menuItem -label "Create Cell Field"
+						-echoCommand true
+						-tearOff 1
+						-allowOptionBoxes true
+						-subMenu false
+						-c createCJCellField
+						cell_field;
+		setParent -m crystalFoamMenu;
+
+		menuItem -divider true;	
+		menuItem -label "Front Batch Render"
+						-echoCommand true
+						-tearOff 1
+						-allowOptionBoxes true
+						-subMenu false
+						-c frontBatchRenderUI
+						frontRender;
+		setParent -m crystalFoamMenu;		
+
+}
+
+
+global proc foamMenu1()
+{
+	  global string $gMainWindow;
+		string $mayaMode = `setMenuMode`;
+		int $index = -1;
+	
+		if(`menu -exists crystalFoamMenu`) 
+		{
+				// Find out the current index of menu
+				string $allMenus[] = `window -q -menuArray $gMainWindow`;
+				string $menu;
+				for($menu in $allMenus) 
+				{
+					$index++;
+					if($menu == "Foam") 
+						break;
+				}
+				
+				deleteUI -menu crystalFoamMenu;
+		}
+	
+		setParent $gMainWindow;
+	
+		menu -label "Foam"
+				 -parent $gMainWindow
+			   -tearOff 1
+			   -allowOptionBoxes true
+			   crystalFoamMenu;
+}
+
+global proc foamMenu()
+{
+	foamMenu1;
+	AddMenuItem;
+}

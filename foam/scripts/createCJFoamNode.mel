@@ -1,0 +1,14 @@
+
+global proc string createCJFoamNode()
+{
+	string $transform = `createNode transform -n "CJFoam#"`;
+	string $foamName = `createNode CJFoam -n "CJFoamShape#" -p $transform`;
+	
+	string $place2d = `createNode place2dTexture`;
+	
+	connectAttr -f ($place2d+".outUV") ($foamName +".uvCoordinate");
+
+	connectAttr -f time1.outTime ($foamName +".currentTime");
+	
+	return $foamName;
+}

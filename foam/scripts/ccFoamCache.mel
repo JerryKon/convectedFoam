@@ -1,0 +1,14 @@
+
+global proc ccFoamCache(string $path)
+{
+	string $sel[] = `ls -sl`;
+	if(`size $sel`==0)
+		error "select nothing";
+	if(`nodeType $sel[0]` != "CJFoam")
+		error "select CJFoam type node";
+		
+	string $foamCacheNode = createFoamCacheNode($path);
+	
+	connectAttr -f ($foamCacheNode+".outPosition") ($sel[0]+".positionArray");
+	connectAttr -f ($foamCacheNode+".outRadius") ($sel[0]+".radiusArray");	
+	}

@@ -1,0 +1,13 @@
+global proc assignMat( string $basePlane,string $foam )
+{
+	string $foamShader=`shadingNode -asShader lambert -n "foamShader#"`;
+	
+	string $sg = `sets -renderable true -noSurfaceShader true -empty -name "foamSG#"`;
+	
+	connectAttr -f ($foamShader+".outColor") ($sg+".surfaceShader");
+	
+	connectAttr -f ($foam+".outColor") ($foamShader+".color");	
+	
+	sets -e -forceElement $sg $basePlane;
+
+}

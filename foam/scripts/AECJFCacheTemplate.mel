@@ -1,0 +1,19 @@
+
+global proc AECJFCacheTemplate( string $nodeName )
+{
+	editorTemplate -beginScrollLayout;
+	
+	editorTemplate -beginLayout "Cache Attribute" -collapse 0;
+		editorTemplate -addControl "cacheName";
+		editorTemplate -addControl "offset";
+	editorTemplate -endLayout;
+		
+	editorTemplate -beginLayout "Time Attribute" -collapse 0;			
+		editorTemplate -addControl "time";
+	editorTemplate -endLayout;	
+
+	AEdependNodeTemplate $nodeName;
+
+	editorTemplate -addExtraControls;
+	editorTemplate -endScrollLayout;
+}

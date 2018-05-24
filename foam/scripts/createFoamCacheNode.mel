@@ -1,0 +1,8 @@
+global  proc string createFoamCacheNode(string $path)
+{
+	string $cacheNode = `createNode CJFCache`;
+	connectAttr -f time1.outTime ($cacheNode+".time");
+	setAttr -type "string" ($cacheNode+".cacheName") $path;
+
+	return $cacheNode;
+}

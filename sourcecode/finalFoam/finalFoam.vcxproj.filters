@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{f95ad567-e079-48cf-bc37-fd220c9d8b8f}</UniqueIdentifier>
+      <Extensions>cpp</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{f653b7dc-36f1-4ac6-aa16-cc4bd4713799}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="Miscellaneous Files">
+      <UniqueIdentifier>{823225e8-14a5-4d87-9d0e-638439b290a7}</UniqueIdentifier>
+      <Extensions>txt</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="cell.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cellFieldNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cellShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cjFoam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cjpc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="distort.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="foamCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="noise.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="perlin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pluginMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cell.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cellFieldNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cellShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cjFoam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cjpc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="distort.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="foamCache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="noise.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="perlin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Options.txt">
+      <Filter>Miscellaneous Files</Filter>
+    </None>
+    <None Include="ReadMe.txt">
+      <Filter>Miscellaneous Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

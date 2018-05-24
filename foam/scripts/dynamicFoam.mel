@@ -1,0 +1,247 @@
+
+proc addFoamAttr(string $grp)
+{
+	addAttr -ln "foamAttr___" -at bool $grp;
+	setAttr -e -keyable true ($grp+".foamAttr___");
+	setAttr -lock true ($grp+".foamAttr___");
+		
+	addAttr -ln "radiusMin" -defaultValue 0.02 -at double $grp;
+	setAttr -e -keyable true ($grp+".radiusMin");
+	
+	addAttr -ln "radiusMax" -defaultValue 0.12 -at double $grp;
+	setAttr -e -keyable true ($grp+".radiusMax");
+	
+	//-----------------------------------------------------------
+	addAttr -ln "particleAttr___" -at bool $grp;
+	setAttr -e -keyable true ($grp+".particleAttr___");
+	setAttr -lock true ($grp+".particleAttr___");
+	
+	addAttr -ln "startTime" -defaultValue 1 -at double $grp;
+	setAttr -e -keyable true ($grp+".startTime");
+	
+	addAttr -ln "emitterRate" -defaultValue 2000 -at double $grp;
+	setAttr -e -keyable true ($grp+".emitterRate");	
+	
+	addAttr -ln "emitterStartUV" -defaultValue 0 -at double $grp;
+	setAttr -e -keyable true ($grp+".emitterStartUV");
+	
+	//addAttr -ln "emitterEndUV" -defaultValue 1 -at double $grp;
+	//setAttr -e -keyable true ($grp+".emitterEndUV");
+	
+	addAttr -ln "emitterWidth" -defaultValue 0.9 -at double $grp;
+	setAttr -e -keyable true ($grp+".startTime");
+	
+	//addAttr -ln "flowSpeed" -defaultValue 0.005 -at double $grp;
+	//setAttr -e -keyable true ($grp+".flowSpeed");
+	
+	//------------------------------------------------------------
+	addAttr -ln "stretchAttr___" -at bool $grp;
+	setAttr -e -keyable true ($grp+".stretchAttr___");
+	setAttr -lock true ($grp+".stretchAttr___");
+	
+	addAttr -ln "repeatU" -defaultValue 1 -at double $grp;
+	setAttr -e -keyable true ($grp+".repeatU");
+	
+	addAttr -ln "repeatV" -defaultValue 1 -at double $grp;
+	setAttr -e -keyable true ($grp+".repeatV");	
+	
+	addAttr -ln "stretchStartTime" -defaultValue 30 -at double $grp;
+	setAttr -e -keyable true ($grp+".stretchStartTime");
+	
+	addAttr -ln "stretchSpeed" -defaultValue 0.005 -at double $grp;
+	setAttr -e -keyable true ($grp+".stretchSpeed");			
+	
+	addAttr -ln "stretchMin" -defaultValue 0.3 -at double $grp;
+	setAttr -e -keyable true ($grp+".stretchMin");	
+}
+	
+proc stretchExpression(string $place2dName,string $grp)
+{
+	string $expstring = ( $grp + ".repeatV = 1 - " + $grp +".stretchSpeed * ( frame - " + $grp + ".stretchStartTime);\n" ) ;	
+	$expstring += ( "if(frame<=" + $grp + ".stretchStartTime)\n" );
+	$expstring += ( "    "+ $grp + ".repeatV = 1;\n");
+	$expstring += ( "if(" + $grp + ".repeatV < " + $grp +".stretchMin)\n");
+	$expstring += ( "    "+ $grp + ".repeatV = " + $grp +".stretchMin;\n" ) ; 
+	connectAttr -f  ($grp + ".repeatU") ($place2dName+".repeatU ");
+	connectAttr -f  ($grp + ".repeatV") ($place2dName+".repeatV ");
+	
+	expression -s $expstring -o $place2dName -ae 1 -uc all ;
+}
+
+proc emittExpression(string $rampN,string $grp )
+{
+	string $expstring = ( $rampN + ".colorEntryList[0].position = " + $grp + ".emitterStartUV;\n" );
+	$expstring += ( $rampN + ".colorEntryList[1].position = " + $rampN + ".colorEntryList[0].position + 0.0001;\n");
+	$expstring += ( $rampN + ".colorEntryList[2].position = " + $rampN + ".colorEntryList[1].position + " + $grp + ".emitterWidth;\n");
+	
+	expression -s $expstring -o $rampN -ae 1 -uc all ;
+}
+
+proc createEmitterRamp( string $emitter, string $grp)
+{
+	string $rampN = `shadingNode -asTexture ramp`;
+	string $plt = `shadingNode -asUtility place2dTexture`;
+	connectAttr -f ($plt+".outUV") ($rampN+".uv");
+	connectAttr -f ($plt+".outUvFilterSize") ($rampN+".uvFilterSize");
+	connectAttr -f ($grp+".emitterRate") ($emitter + ".rate");
+	
+	setAttr ( $rampN+".colorEntryList[0].position" ) 0;
+	setAttr ( $rampN+".colorEntryList[0].color") -type double3 0 0 0 ;
+	
+	setAttr ( $rampN+".colorEntryList[1].position" ) 0.0001;
+	setAttr ( $rampN+".colorEntryList[1].color") -type double3 1 1 1 ;
+	
+	setAttr ( $rampN+".colorEntryList[2].position" ) 0.3;
+	setAttr ( $rampN+".colorEntryList[2].color") -type double3 0 0 0 ;
+	
+	connectAttr -f ($rampN+".outColor") ($emitter+".textureRate");
+	setAttr ($emitter+".enableTextureRate") 1;
+	
+	emittExpression($rampN,$grp);
+	
+	}
+	
+proc string createParticle(string $grp,int $nOrn)
+{
+	
+	string $particle[] ;
+	if( $nOrn== 0 )
+		$particle= `particle -n "foamParticle#"`;
+	else
+	{
+		$particle = `nParticle -n "foamParticle#"`;
+		setAttr ($particle[1]+".primaryVisibility") 0;
+		setAttr ($particle[1]+".radius") 0.04;	
+		setAttr ($particle[1]+".selfCollide") 1;
+		setAttr ($particle[1]+".collideWidthScale") 0.9;						
+	}
+	
+	setAttr ($particle[1]+".conserve") 0.95;
+	
+	addAttr -ln "foamRadiusPP"  -dt doubleArray  $particle[1];
+	addAttr -ln "foamMaxRadius"  -dt doubleArray  $particle[1];	
+	addAttr -ln "foamOpacityPP"  -dt doubleArray  $particle[1];	
+		
+	//--------------------------creation expression
+	string $creationExpres="/*-----------------------crystal Foam expression-----------------------*/\n\n" ;
+	$creationExpres +=  "seed(id);\n";	
+	$creationExpres +=  "foamMaxRadius = rand(" + $grp + ".radiusMin," + $grp + ".radiusMax);\n\n";		
+	$creationExpres += "/*-----------------------End of crystal Foam expression-----------------------*/\n";
+	
+	dynExpression -s $creationExpres -c $particle[1];
+	
+	//--------------------------runtime expression
+	string $runtimeExpres="/*-----------------------crystal Foam expression-----------------------*/\n\n";
+	
+	$runtimeExpres += "foamRadiusPP = foamMaxRadius * foamOpacityPP;\n";
+	
+	$runtimeExpres += "/*-----------------------End of crystal Foam expression-----------------------*/\n";
+	
+	dynExpression -s $runtimeExpres -rad $particle[1];	
+	
+	string $aryMap[] = `arrayMapper -target $particle[1] -destAttr foamOpacityPP -inputV ageNormalized -type ramp`;
+	
+	string $rampN[] = `listConnections -s 1 ($aryMap[0]+".computeNode")`;
+	
+	removeMultiInstance -break true ( $rampN[0]+".colorEntryList[1]" );
+	
+	setAttr ( $rampN[0]+".colorEntryList[0].position" ) 0.85;
+	setAttr ( $rampN[0]+".colorEntryList[0].color") -type double3 1 1 1 ;
+	
+	setAttr ( $rampN[0]+".colorEntryList[1].position" ) 1;
+	setAttr ( $rampN[0]+".colorEntryList[1].color") -type double3 0 0 0 ;
+	
+	setAttr ( $rampN[0]+".colorEntryList[2].position" ) 0;
+	setAttr ( $rampN[0]+".colorEntryList[2].color") -type double3 0.1 0.1 0.1 ;
+	
+	setAttr ( $rampN[0]+".colorEntryList[3].position" ) 0.15;
+	setAttr ( $rampN[0]+".colorEntryList[3].color") -type double3 1 1 1 ;
+
+	setAttr ( $rampN[0]+".interpolation") 4;
+
+	setAttr ( $particle[1] +".lifespanMode") 2;
+	setAttr ( $particle[1] +".lifespan") 5;	
+	setAttr ( $particle[1] +".lifespanRandom") 1;		
+	return $particle[1];
+	
+}  
+
+global proc dynamicFoam(int $nOrn)
+{
+	//--------------------------------------------创建泡沫总组
+	string $Parent_GRP = `createNode transform -n "crystalFoamGRP#"`;
+	
+	addFoamAttr($Parent_GRP);	
+		
+	string $foamNode = createCJFoamNode();
+	string $place2dT[]=`listConnections -s 1 ($foamNode+".uvCoordinate")`;
+	
+	stretchExpression($place2dT[0],$Parent_GRP);
+	
+	string $foamTrans[] = `listRelatives -p $foamNode`;
+	
+	parent $foamTrans[0] $Parent_GRP;
+	
+	//---------------------------------------------创建粒子发射面，并附上材质
+	
+	string $basePoly[] = `polyPlane -ch on -o on -sw 1 -sh 1 -cuv 2 `;
+
+	select -r ($basePoly[0]+".map[0:3]");
+	string $selection[] = `ls -sl`; 
+	ConvertSelectionToUVs; 
+	polyRotateUVs 90;
+	select -cl;
+	connectAttr -f ($foamNode+".baseWidth") ($basePoly[1]+".height");
+	connectAttr -f ($foamNode+".baseHeight") ($basePoly[1]+".width");	
+
+	string $newName = `rename  $basePoly[0] "foamBaseMesh#"`;			
+	assignMat( $newName ,$foamNode );	
+	
+	parent $newName $Parent_GRP;	
+	//----------------------------------------------------------------------------------
+
+	//------------------------------------------------创建粒子与动力场
+	select -r $newName;
+	
+	string $emit[] = `emitter -type surface -r 500 -sro 0 -nuv 0 -cye none -cyi 1 -spd 0 -srn 0 -nsp 1 -tsp 0 -mxd 0 -mnd 0 -dx 1 -dy 0 -dz 0 -sp 0 -n "foamEmitter#"`;
+
+	//-----创建普通粒子还是nParticle
+	string $particleSh = createParticle($Parent_GRP,$nOrn);
+	
+	string $parpar[] = `listRelatives -p $particleSh`;
+	parent $parpar[0] $Parent_GRP;	
+	
+	//------连接发射器
+	string $shpae[]=`connectDynamic -em $emit[1] $parpar[0]`;
+	createEmitterRamp($emit[1],$Parent_GRP); 
+
+	//-------创建场
+	string $field = `createNode CJCellField -n "CJCellField#"`;
+	
+	connectDynamic -f $field $parpar[0];	
+	
+	setFieldAttr($field);
+	
+	//---------放到总的组下边	
+	parent $field $Parent_GRP;
+	
+	//----------------------------------------------------------------------------------
+	
+	//----------------------连接粒子和泡沫节点属性
+	connectAttr -f ($particleSh+".position") ($foamNode+".positionArray");
+	connectAttr -f ($particleSh+".foamRadiusPP") ($foamNode+".radiusArray");
+	connectAttr -f ($Parent_GRP+".startTime") ($foamNode+".startTime");
+	if(`nodeType $particleSh` == "particle")
+		connectAttr -f ($Parent_GRP+".startTime") ($particleSh+".startFrame");
+	else if(`nodeType $particleSh` == "nParticle")
+	{
+		string $ncu[] = `listConnections -p 1 -s 1 ($particleSh+".startFrame")`;
+		
+		connectAttr -f ($Parent_GRP+".startTime") $ncu[0];	
+	}
+	
+	//---------------
+	select -r $Parent_GRP;
+	
+}
+

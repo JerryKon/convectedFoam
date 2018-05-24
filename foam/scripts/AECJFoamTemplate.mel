@@ -1,0 +1,35 @@
+
+global proc AECJFoamTemplate( string $nodeName )
+{
+	editorTemplate -beginScrollLayout;
+	
+	editorTemplate -addControl "foamType";	
+
+	editorTemplate -beginLayout "Foam Attributes" -collapse 0;
+		editorTemplate -addControl "baseBound";
+		editorTemplate -addControl "sampleRadius";
+		editorTemplate -addControl "samplePercent";
+	editorTemplate -endLayout;
+
+	editorTemplate -beginLayout "Turbulence Attributes" -collapse 0;
+		editorTemplate -addControl "turbulence";		
+		editorTemplate -addControl "turbulenceFrequency";
+		editorTemplate -addControl "turbulencePower";
+		editorTemplate -addControl "turbulenceRoughness";
+		editorTemplate -addControl "turbulenceSeed";
+	editorTemplate -endLayout;
+
+	editorTemplate -beginLayout "Time Attributes" -collapse 1;
+		editorTemplate -addControl "startTime";		
+		editorTemplate -addControl "currentTime";
+	editorTemplate -endLayout;
+
+	editorTemplate -beginLayout "UV Attributes" -collapse 1;
+		editorTemplate -addControl "uvCoordinate";		
+	editorTemplate -endLayout;	
+
+	AEdependNodeTemplate $nodeName;
+
+	editorTemplate -addExtraControls;
+	editorTemplate -endScrollLayout;
+}

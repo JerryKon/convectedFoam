@@ -1,0 +1,36 @@
+
+global proc AECJCellFieldTemplate( string $nodeName )
+{
+	editorTemplate -beginScrollLayout;
+
+	editorTemplate -beginLayout "Transform Attributes" -collapse 0;
+		editorTemplate -addControl "translate";
+		editorTemplate -addControl "rotate";
+		editorTemplate -addControl "scale";
+		editorTemplate -addControl "shear";
+		editorTemplate -addControl "rotateOrder";
+		editorTemplate -addControl "rotateAxis";
+		editorTemplate -addControl "inheritsTransform";
+	editorTemplate -endLayout;
+
+	editorTemplate -beginLayout "Cell Field Attributes" -collapse 0;
+		editorTemplate -addControl "constraintY";
+		AEfieldCommon $nodeName;
+		editorTemplate -addControl "jitter";
+		editorTemplate -addControl "yPosition";			
+		editorTemplate -addControl "frequency";
+		editorTemplate -addControl "phase";
+		editorTemplate -addControl "seed";
+	editorTemplate -endLayout;
+
+	editorTemplate -beginLayout "Force" -collapse 0;
+		editorTemplate -addControl "nearValue";
+		editorTemplate -addControl "farValue";
+		editorTemplate -addControl "forcePower";
+	editorTemplate -endLayout;
+
+	AEfieldNoScroll $nodeName;
+
+	editorTemplate -addExtraControls;
+	editorTemplate -endScrollLayout;
+}

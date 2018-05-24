@@ -1,0 +1,18 @@
+global proc frontBatchRender(int $dynamicStart,int $startFrame,int $endFrame,string $pathName)
+{
+int $i= $dynamicStart;
+string $path;
+for( ;$i<=$endFrame;$i++)
+{
+	currentTime -e $i;
+	if( $i>= $startFrame )
+	{      
+		$path = ($pathName+"_"+$i+".iff");
+
+		removeRenderWindowPanel renderView;
+		RenderIntoNewWindow;
+		renderIntoNewWindow render;
+		renderWindowSaveImageCallback "renderView"  $path "image";
+	}
+}
+}

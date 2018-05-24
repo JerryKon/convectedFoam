@@ -1,0 +1,58 @@
+
+global proc makeParticle2Foam(int $foam)
+{
+	string $sel[] = `ls -sl`;
+	if(`size $sel`==0)
+		error "select particle";
+	string $child[]=`listRelatives -c $sel[0]`;
+	
+	addAttr -ln "foamRadiusPP"  -dt doubleArray  $child[0];
+	addAttr -ln "foamMaxRadius"  -dt doubleArray  $child[0];	
+	addAttr -ln "foamOpacityPP"  -dt doubleArray  $child[0];		
+	
+	string $aryMap[] = `arrayMapper -target $child[0] -destAttr foamOpacityPP -inputV ageNormalized -type ramp`;
+	string $rampN[] = `listConnections -s 1 ($aryMap[0]+".computeNode")`;
+	removeMultiInstance -break true ( $rampN[0]+".colorEntryList[1]" );
+	
+	setAttr ( $rampN[0]+".colorEntryList[0].position" ) 0.85;
+	setAttr ( $rampN[0]+".colorEntryList[0].color") -type double3 1 1 1 ;
+	setAttr ( $rampN[0]+".colorEntryList[1].position" ) 1;
+	setAttr ( $rampN[0]+".colorEntryList[1].color") -type double3 0 0 0 ;
+	setAttr ( $rampN[0]+".colorEntryList[2].position" ) 0;
+	setAttr ( $rampN[0]+".colorEntryList[2].color") -type double3 0.1 0.1 0.1 ;
+	setAttr ( $rampN[0]+".colorEntryList[3].position" ) 0.15;
+	setAttr ( $rampN[0]+".colorEntryList[3].color") -type double3 1 1 1 ;
+	setAttr ( $rampN[0]+".interpolation") 4;
+	
+	setAttr ( $child[0] +".lifespanMode") 2;
+	setAttr ( $child[0] +".lifespan") 3;	
+	setAttr ( $child[0] +".lifespanRandom") 1;	
+	
+	//--------------------------creation expression
+	string $creationExpres="/*-----------------------crystal Foam expression-----------------------*/\n\n" ;
+	$creationExpres +=  "seed(id);\n";	
+	$creationExpres +=  "foamMaxRadius = rand(0.02,0.12);\n\n";	
+	$creationExpres += "/*-----------------------End of crystal Foam expression-----------------------*/\n";
+	
+	dynExpression -s $creationExpres -c $child[0];
+	
+	//--------------------------runtime expression
+	string $runtimeExpres="/*-----------------------crystal Foam expression-----------------------*/\n\n";
+	
+	$runtimeExpres += "foamRadiusPP = foamMaxRadius * foamOpacityPP;\n";
+	
+	$runtimeExpres += "/*-----------------------End of crystal Foam expression-----------------------*/\n";
+	
+	dynExpression -s $runtimeExpres -rad $child[0];	
+	
+	if( $foam ==1 )
+	{
+		string $foamNode = createCJFoamNode();
+		
+		connectAttr -f ($child[0]+".position") ($foamNode+".positionArray");
+		
+		connectAttr -f ($child[0]+".foamRadiusPP") ($foamNode+".radiusArray");
+
+		connectAttr -f ($child[0]+".startTime") ($foamNode+".startTime");	
+		}
+}

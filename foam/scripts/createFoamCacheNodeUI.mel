@@ -1,0 +1,28 @@
+global proc beginCreateCacheNode()
+{
+	string $imagePath = `textFieldGrp -q -text pathName`;
+	ccFoamCache($imagePath);
+}
+
+global proc createFoamCacheNodeUI()
+{
+    string $cacheNode_window ;
+	if(`window -ex $cacheNode_window`)
+         deleteUI -window $cacheNode_window;
+	$cacheNode_window= `window -title "foamCacheNode"
+ 		-iconName "fc"
+ 		-widthHeight 300 150`;
+	columnLayout -adjustableColumn true;
+	separator -height 20 ;	
+	
+	textFieldGrp -label "PathName"
+		      -text "your cache path and name" pathName;
+       separator -height 20 ;  
+ 
+    button -label "createCacheNode" -command "beginCreateCacheNode";
+ 	button -label "Close" -command ("deleteUI -window " + $cacheNode_window);
+           
+ 	setParent ..;
+	window -e -widthHeight 400 160 $cacheNode_window ;
+	showWindow $cacheNode_window;
+}

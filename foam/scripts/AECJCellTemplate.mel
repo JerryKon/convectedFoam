@@ -1,0 +1,24 @@
+
+global proc AECJCellTemplate( string $nodeName )
+{
+	AEswatchDisplay $nodeName;
+	editorTemplate -beginScrollLayout;
+
+	editorTemplate -beginLayout "Color Balance" -collapse 0;
+		editorTemplate -addControl "nearValue";
+		editorTemplate -addControl "farValue";
+		editorTemplate -addControl "colorPower";
+	editorTemplate -endLayout;
+
+	editorTemplate -beginLayout "Cell Attribute" -collapse 0;
+		editorTemplate -addControl "frequency";
+		editorTemplate -addControl "jitter";
+		editorTemplate -addControl "seed";
+	editorTemplate -endLayout;
+	
+	// include/call base class/node attributes
+	AEdependNodeTemplate $nodeName;
+
+	editorTemplate -addExtraControls;
+	editorTemplate -endScrollLayout;
+}

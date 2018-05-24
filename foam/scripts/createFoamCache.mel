@@ -1,0 +1,14 @@
+
+global proc createFoamCache(string $pathName,int $startFrame,int $endFrame)
+{
+	string $sel[] = `ls -sl`;
+	string $parShape[] = `listRelatives -c -f $sel[0]`;	
+
+	int $i = $startFrame;
+
+	for(;$i<= $endFrame;$i++)
+	{
+		currentTime -e $i;
+		foamCache -t $i -p $pathName -n $parShape[0] ;
+	}
+}

@@ -1,0 +1,12 @@
+
+
+global proc createCJCellField()
+{
+	string $sel[]=`ls -sl`;
+	if(`size $sel` == 0)
+		error "select particle!";
+
+	string $field = `createNode CJCellField -n "CJCellField#"`;
+	
+	connectDynamic -f $field $sel[0];	
+	}
